@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Manager</title>
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Title -->
+        <h1 class="title">TodoInput</h1>
+
+        <!-- Input Section -->
+        <div class="todo-input">
+            <div class="input-group">
+                <input type="text" id="new-task" placeholder="New Task">
+                <span id="error-message" class="error hidden"></span>
+                <button id="add-task-btn">Add new task</button>
+            </div>
+        </div>
+
+        <!-- Todo List Title -->
+        <h2 class="title">Todo List</h2>
+
+        <!-- Filters -->
+        <div class="todo-filters">
+            <button id="filter-all" class="filter-btn active">All</button>
+            <button id="filter-done" class="filter-btn">Done</button>
+            <button id="filter-todo" class="filter-btn">Todo</button>
+        </div>
+
+        <!-- Task List -->
+        <ul id="todo-list" class="todo-list"></ul>
+
+        <!-- Delete Buttons -->
+        <div class="delete-buttons">
+            <button id="delete-done-tasks" class="delete-btn">Delete Done Tasks</button>
+            <button id="delete-all-tasks" class="delete-btn">Delete All Tasks</button>
+        </div>
+    </div>
+
+    <!-- Popups -->
+    <div class="popup hidden" id="rename-popup">
+        <h2>Rename Task</h2>
+        <input type="text" id="rename-input">
+        <div class="popup-actions">
+            <button id="save-rename-btn" class="popup-btn save-btn">Save</button>
+            <button id="cancel-rename-btn" class="popup-btn cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <div class="popup hidden" id="delete-popup">
+        <h2>Delete Task</h2>
+        <p>Are you sure you want to delete this task?</p>
+        <div class="popup-actions">
+            <button id="confirm-delete-btn" class="popup-btn confirm-btn">Confirm</button>
+            <button id="cancel-delete-btn" class="popup-btn cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <div class="popup hidden" id="delete-done-popup">
+        <h2>Delete Done Tasks</h2>
+        <p>Are you sure you want to delete all completed tasks?</p>
+        <div class="popup-actions">
+            <button id="confirm-delete-done-btn" class="popup-btn confirm-btn">Confirm</button>
+            <button id="cancel-delete-done-btn" class="popup-btn cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script src="project.js"></script>
+</body>
+</html>
