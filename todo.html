@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Manager</title>
+    <link rel="stylesheet" href="todo.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const taskInput = document.getElementById('new-task');
+    const addTaskButton = document.getElementById('add-task-btn');
+    const taskList = document.getElementById('todo-list');
+    const deleteDoneTasksButton = document.getElementById('delete-done-tasks');
+    const deleteAllTasksButton = document.getElementById('delete-all-tasks');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    let tasks = [];
+
+    const saveTasks = () => {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    };
+
+    const loadTasks = () => {
+        const storedTasks = localStorage.getItem('tasks');
+        if (storedTasks) {
+            tasks = JSON.parse(storedTasks);
+        }
+    };
+
+    const renderTasks = (filter = 'all') => {
+        taskList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            if (filter === 'done' && !task.done) return;
+            if (filter === 'todo' && task.done) return;
+
+            const li = document.createElement('li');
+            li.className = task.done ? 'done' : '';
+
+            const taskText = document.createElement('span');
+            taskText.textContent = task.text;
+            li.appendChild(taskText);
+
+            const buttonGroup = document.createElement('div');
+            buttonGroup.classList.add('button-group');
+
+            const doneButton = document.createElement('button');
+            doneButton.textContent = '✔';
+            doneButton.classList.add('done-btn');
+            doneButton.addEventListener('click', () => toggleTask(index));
+            buttonGroup.appendChild(doneButton);
+
+            const editButton = document.createElement('button');
+            editButton.textContent = '✏️';
+            editButton.classList.add('edit-btn');
+            editButton.addEventListener('click', () => enableEditing(taskText, index));
+            buttonGroup.appendChild(editButton);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '🗑';
+            deleteButton.classList.add('delete-btn');
+            deleteButton.addEventListener('click', () => deleteTask(index));
+            buttonGroup.appendChild(deleteButton);
+
+            li.appendChild(buttonGroup);
+            taskList.appendChild(li);
+        });
+    };
+
+    const validateInput = (input) => {
+        if (!input.trim()) {
+            alert('Task cannot be empty!');
+            return false;
+        }
+        if (input.length < 5) {
+            alert('Task must be at least 5 characters long!');
+            return false;
+        }
+        if (/^\d/.test(input)) {
+            alert('Task cannot start with a number!');
+            return false;
+        }
+        return true;
+    };
+
+    const toggleTask = (index) => {
+        tasks[index].done = !tasks[index].done;
+        saveTasks();
+        renderTasks();
+    };
+
+    const deleteTask = (index) => {
+        tasks.splice(index, 1);
+        saveTasks();
+        renderTasks();
+    };
+
+    const deleteDoneTasks = () => {
+        if (tasks.filter(task => task.done).length === 0) {
+            alert('No completed tasks to delete!');
+            return;
+        }
+        tasks = tasks.filter(task => !task.done);
+        saveTasks();
+        renderTasks();
+    };
+
+    const deleteAllTasks = () => {
+        if (tasks.length === 0) {
+            alert('No tasks to delete!');
+            return;
+        }
+        tasks = [];
+        saveTasks();
+        renderTasks();
+    };
+
+    const enableEditing = (taskText, index) => {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = taskText.textContent;
+        input.className = 'edit-input';
+        taskText.replaceWith(input);
+
+        input.focus();
+
+        input.addEventListener('blur', () => saveEdit(input, taskText, index));
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') saveEdit(input, taskText, index);
+        });
+    };
+
+    const saveEdit = (input, taskText, index) => {
+        const newText = input.value.trim();
+        if (validateInput(newText)) {
+            tasks[index].text = newText;
+            saveTasks();
+            taskText.textContent = newText;
+            input.replaceWith(taskText);
+        } else {
+            input.replaceWith(taskText);
+        }
+    };
+
+    const setFilter = (filter) => {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`filter-${filter}`).classList.add('active');
+        renderTasks(filter);
+    };
+
+    addTaskButton.addEventListener('click', () => {
+        const taskText = taskInput.value.trim();
+        if (validateInput(taskText)) {
+            tasks.push({ text: taskText, done: false });
+            taskInput.value = '';
+            saveTasks();
+            renderTasks();
+        }
+    });
+
+    deleteDoneTasksButton.addEventListener('click', deleteDoneTasks);
+    deleteAllTasksButton.addEventListener('click', deleteAllTasks);
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filter = btn.id.replace('filter-', '');
+            setFilter(filter);
+        });
+    });
+
+    loadTasks();
+    renderTasks();
+});
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Title -->
+        <h1 class="title">TodoInput</h1>
+
+        <!-- Input Section -->
+        <div class="todo-input">
+            <div class="input-group">
+                <input type="text" id="new-task" placeholder="New Task">
+                <button id="add-task-btn">Add new task</button>
+            </div>
+        </div>
+
+        <!-- Todo List Title -->
+        <h2 class="title">Todo List</h2>
+
+        <!-- Filters -->
+        <div class="todo-filters">
+            <button id="filter-all" class="filter-btn active">All</button>
+            <button id="filter-done" class="filter-btn">Done</button>
+            <button id="filter-todo" class="filter-btn">Todo</button>
+        </div>
+
+        <!-- Task List -->
+        <ul id="todo-list" class="todo-list"></ul>
+
+        <!-- Delete Buttons -->
+        <div class="delete-buttons">
+            <button id="delete-done-tasks" class="delete-btn">Delete Done Tasks</button>
+            <button id="delete-all-tasks" class="delete-btn">Delete All Tasks</button>
+        </div>
+    </div>
+    
+</body>
+</html>
