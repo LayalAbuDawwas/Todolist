@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renamePopup = document.getElementById('rename-popup');
     const deletePopup = document.getElementById('delete-popup');
     const deleteDonePopup = document.getElementById('delete-done-popup');
+    const deleteAllPopup = document.getElementById('delete-all-popup');
     const renameInput = document.getElementById('rename-input');
 
     let tasks = [];
@@ -55,6 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
             showError('Task cannot be empty!');
             return false;
         }
+        if(/[\u0600-\u06FF]/.test(input)) {
+            showError('Task cannot contain Arabic characters!');
+            return false;
+        }
         if (input.length < 5) {
             showError('Task must be at least 5 characters long!');
             return false;
@@ -63,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showError('Task cannot start with a number!');
             return false;
         }
+
         hideError();
         return true;
     };
@@ -90,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             buttonGroup.appendChild(doneButton);
 
             const editButton = document.createElement('button');
-            editButton.textContent = '✏️';
+            editButton.textContent = '✏';
             editButton.classList.add('edit-btn');
             editButton.addEventListener('click', () => handleRenameTask(index));
             buttonGroup.appendChild(editButton);
@@ -145,6 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const handleDeleteDoneTasks = () => {
+        if (!tasks.some(task => task.done)) {
+            alert('No completed tasks to delete!');
+            return;
+        }
+
         openPopup(deleteDonePopup);
 
         document.getElementById('confirm-delete-done-btn').onclick = () => {
@@ -157,14 +168,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('cancel-delete-done-btn').onclick = () => closePopup(deleteDonePopup);
     };
 
-    const deleteAllTasks = () => {
+    const handleDeleteAllTasks = () => {
         if (tasks.length === 0) {
             alert('No tasks to delete!');
             return;
         }
-        tasks = [];
-        saveTasks();
-        renderTasks();
+
+        openPopup(deleteAllPopup);
+
+        document.getElementById('confirm-delete-all-btn').onclick = () => {
+            tasks = [];
+            saveTasks();
+            renderTasks();
+            closePopup(deleteAllPopup);
+        };
+
+        document.getElementById('cancel-delete-all-btn').onclick = () => closePopup(deleteAllPopup);
     };
 
     const openPopup = (popup) => popup.classList.remove('hidden');
@@ -181,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     deleteDoneTasksButton.addEventListener('click', handleDeleteDoneTasks);
-    deleteAllTasksButton.addEventListener('click', deleteAllTasks);
+    deleteAllTasksButton.addEventListener('click', handleDeleteAllTasks);
 
     filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {
