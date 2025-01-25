@@ -2,21 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo Manager</title>
     <link rel="stylesheet" href="project.css">
+
 </head>
 <body>
     <div class="container">
         <!-- Title -->
-        <h1 class="title">TodoInput</h1>
+        <h1 class="title">Todo Manager</h1>
 
         <!-- Input Section -->
         <div class="todo-input">
             <div class="input-group">
+               
                 <input type="text" id="new-task" placeholder="New Task">
                 <span id="error-message" class="error hidden"></span>
-                <button id="add-task-btn">Add new task</button>
+                <button id="add-task-btn" class="primary-btn">Add New Task</button>
             </div>
         </div>
 
@@ -35,6 +38,7 @@
 
         <!-- Delete Buttons -->
         <div class="delete-buttons">
+             <i class="fas fa-clipboard input-icon"></i>
             <button id="delete-done-tasks" class="delete-btn">Delete Done Tasks</button>
             <button id="delete-all-tasks" class="delete-btn">Delete All Tasks</button>
         </div>
@@ -43,7 +47,7 @@
     <!-- Popups -->
     <div class="popup hidden" id="rename-popup">
         <h2>Rename Task</h2>
-        <input type="text" id="rename-input">
+        <input type="text" id="rename-input" placeholder="Enter new task name">
         <div class="popup-actions">
             <button id="save-rename-btn" class="popup-btn save-btn">Save</button>
             <button id="cancel-rename-btn" class="popup-btn cancel-btn">Cancel</button>
@@ -68,6 +72,16 @@
         </div>
     </div>
 
+    <div class="popup hidden" id="delete-all-popup">
+        <h2>Delete All Tasks</h2>
+        <p>Are you sure you want to delete all tasks?</p>
+        <div class="popup-actions">
+            <button id="confirm-delete-all-btn" class="popup-btn confirm-btn">Confirm</button>
+            <button id="cancel-delete-all-btn" class="popup-btn cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
     <script src="project.js"></script>
 </body>
 </html>
